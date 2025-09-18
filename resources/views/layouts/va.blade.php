@@ -33,27 +33,6 @@
 <body class="font-sans antialiased bg-background">
     <div class="min-h-screen bg-gray-100">
         <!-- Page Content -->
-        <header class="bg-card border-b border-border sticky top-0 z-40"
-            style="background-color: var(--card); border-color: var(--border);">
-            <div class="flex items-center justify-between p-4">
-                <div class="flex items-center space-x-3">
-                    <div class="h-8 w-8 rounded-full flex items-center justify-center"
-                        style="background-color: var(--primary);">
-                        <a href="{{ route('admin.dashboard')  }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" style="color: var(--primary-foreground);">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                        </svg>
-                        </a>
-                    </div>
-                    <div>
-                        <h1 class="font-semibold" style="color: var(--foreground);">Administration</h1>
-                        <p class="text-xs" style="color: var(--muted-foreground);">QR Attendance Management</p>
-                    </div>
-                </div>
-            </div>
-        </header>
         <main>
             {{ $slot }}
         </main>

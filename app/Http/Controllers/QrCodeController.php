@@ -18,7 +18,7 @@ class QrCodeController extends Controller
     /**
      * Génère un QR Code basé sur les données du formulaire.
      */
-    public function generate(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nom_emplacement' => 'required|string|max:255',

@@ -3,114 +3,118 @@
         Scanner QR Code
     </x-slot>
 
-    <div class="min-h-screen bg-background text-foreground p-4 flex flex-col">
-        <header class="text-center mb-4">
-            <h1 class="text-xl font-bold">Scannez un QR Code</h1>
-            <p class="text-muted-foreground text-sm">Placez le code QR dans le cadre</p>
+    {{--
+        Rappel : La balise meta 'csrf-token' est essentielle pour la sécurité.
+        Elle doit être présente dans votre fichier de layout principal (resources/views/layouts/app.blade.php)
+        à l'intérieur de la section <head>.
+    --}}
+
+    <div class="min-h-screen bg-gray-900 text-white p-4 flex flex-col">
+        <header class="text-center mb-4 z-10">
+            <h1 class="text-2xl font-bold">Scannez un QR Code</h1>
+            <p id="status-text" class="text-gray-400 text-sm animate-pulse">Démarrage de la caméra...</p>
         </header>
 
-        <main class="flex-grow flex flex-col items-center justify-center">
-            <!-- Conteneur pour le scanner -->
-            <div id="qr-reader" class="w-full max-w-sm mx-auto rounded-lg overflow-hidden border-2 border-gray-300 shadow-lg"></div>
+        <main class="flex-grow flex flex-col items-center justify-center relative">
+            {{-- Le conteneur où la vidéo de la caméra sera injectée --}}
+            <div id="reader" class="w-full max-w-md h-auto rounded-lg shadow-2xl overflow-hidden border-4 border-gray-700"></div>
 
-            <!-- Zone de message pour les résultats -->
-            <div id="qr-result" class="mt-4 text-center w-full max-w-sm mx-auto"></div>
+            {{-- Cette zone affichera les messages de succès ou d'erreur par-dessus la vue --}}
+            <div id="result" class="absolute inset-0 flex items-center justify-center z-20 transition-opacity duration-300 opacity-0 pointer-events-none"></div>
         </main>
 
-        <footer class="text-center mt-6">
-             <a href="{{ route('employe.dashboard') }}" class="text-sm text-primary hover:underline">&larr; Retour au tableau de bord</a>
+        <footer class="text-center mt-4 z-10">
+             <a href="{{ route('employe.dashboard') }}" class="text-sm text-white/80 hover:underline">&larr; Retour au tableau de bord</a>
         </footer>
     </div>
 
-    <!-- Librairie pour le scanner QR -->
-    <script src="[https://unpkg.com/html5-qrcode](https://unpkg.com/html5-qrcode)"></script>
+    {{-- Inclusion de la librairie JavaScript pour le scan de QR Code --}}
+    <script src="https://unpkg.com/html5-qrcode/html5-qrcode.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const resultContainer = document.getElementById('qr-result');
-            let isProcessing = false; // Verrou pour éviter les scans multiples
+            const html5QrCode = new Html5Qrcode("reader");
+            const resultContainer = document.getElementById('result');
+            const statusText = document.getElementById('status-text');
 
-            function onScanSuccess(decodedText, decodedResult) {
-                if (isProcessing) {
-                    return; // Ignorer si un scan est déjà en cours de traitement
+            // Fonction pour afficher un message de résultat (succès ou erreur)
+            function showResult(message, type = 'success') {
+                let icon = '';
+                let bgColor = '';
+
+                if (type === 'success') {
+                    bgColor = 'bg-green-500/90';
+                    icon = `<svg class="w-16 h-16 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                } else {
+                    bgColor = 'bg-red-500/90';
+                    icon = `<svg class="w-16 h-16 text-white mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
                 }
-                isProcessing = true;
 
-                // Vibreur pour le feedback utilisateur
-                if (navigator.vibrate) {
-                    navigator.vibrate(100);
-                }
-
-                // Afficher un message de traitement
-                resultContainer.innerHTML = `<p class="text-blue-600 font-semibold animate-pulse">Traitement en cours...</p>`;
-
-                // Envoyer le résultat au serveur
-                fetch("{{ route('pointage.scan') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({ scan_result: decodedText })
-                })
-                .then(response => {
-                    // On a besoin du corps de la réponse pour les erreurs et les succès
-                    return response.json().then(data => ({ status: response.status, body: data }));
-                })
-                .then(({ status, body }) => {
-                    if (status >= 200 && status < 300) { // Succès (ex: 200 OK)
-                        const user = body.user;
-                        const pointage = body.pointage;
-                        let messageHtml = `
-                            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-md">
-                                <p class="font-bold">${body.message}</p>
-                                <p class="text-sm mt-1">${user.prenom} ${user.nom}</p>
-                                <div class="text-xs mt-2">
-                                    <p>Arrivée: <strong>${pointage.heure_arrivee || '--:--'}</strong></p>
-                                    <p>Départ: <strong>${pointage.heure_depart || '--:--'}</strong></p>
-                                </div>
-                            </div>
-                        `;
-                        resultContainer.innerHTML = messageHtml;
-                        // Rediriger vers le tableau de bord après 3 secondes
-                        setTimeout(() => window.location.href = "{{ route('employe.dashboard') }}", 3000);
-                    } else { // Erreur (ex: 409 Conflict, 400 Bad Request)
-                        throw new Error(body.message || 'Une erreur est survenue.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    resultContainer.innerHTML = `
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md">
-                            <p class="font-bold">Opération échouée</p>
-                            <p class="text-sm mt-1">${error.message}</p>
+                resultContainer.innerHTML = `
+                    <div class="p-8 rounded-lg ${bgColor} text-white text-center">
+                        <div class="flex flex-col items-center">
+                            ${icon}
+                            <p class="font-semibold text-lg">${message}</p>
                         </div>
-                    `;
-                    // Réinitialiser le verrou après 3 secondes pour permettre un nouveau scan
-                    setTimeout(() => { isProcessing = false; }, 3000);
-                });
+                    </div>`;
+                resultContainer.classList.remove('opacity-0');
+                resultContainer.classList.add('pointer-events-auto');
             }
 
-            const html5Qrcode = new Html5Qrcode("qr-reader");
-            html5Qrcode.start(
-                { facingMode: "environment" }, // Utiliser la caméra arrière par défaut
-                {
-                    fps: 10,
-                    qrbox: (viewfinderWidth, viewfinderHeight) => {
-                        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-                        const qrboxSize = Math.floor(minEdge * 0.7);
-                        return { width: qrboxSize, height: qrboxSize };
-                    }
-                },
-                onScanSuccess,
-                (errorMessage) => { /* Ignorer les erreurs de scan non bloquantes */ }
-            ).catch(err => {
-                 resultContainer.innerHTML = `
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
-                        <p class="font-bold">Erreur de caméra</p>
-                        <p class="text-sm mt-1">Impossible de démarrer la caméra. Veuillez autoriser l'accès dans les paramètres de votre navigateur.</p>
-                    </div>
-                `;
-            });
+            // Cette fonction est appelée automatiquement quand un QR code est détecté
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+                // On arrête la caméra pour ne pas scanner plusieurs fois
+                html5QrCode.stop().then(() => {
+                    statusText.textContent = "Scan réussi. Traitement en cours...";
+
+                    // On envoie la donnée scannée au serveur
+                    fetch('{{ route('pointage.scan') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ scanned_data: decodedText })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showResult(data.message, 'success');
+                            // Si le pointage est un succès, on redirige vers le tableau de bord après 2 secondes
+                            setTimeout(() => {
+                                window.location.href = data.redirect_url;
+                            }, 2000);
+                        } else {
+                            showResult(data.message, 'error');
+                            // Si c'est une erreur (ex: déjà pointé), on recharge pour un nouveau scan après 3 secondes
+                            setTimeout(() => { location.reload(); }, 3000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur de communication:', error);
+                        showResult('Une erreur de communication est survenue.', 'error');
+                        setTimeout(() => { location.reload(); }, 3000);
+                    });
+                }).catch(err => console.error("Échec de l'arrêt du scanner.", err));
+            };
+
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 },
+                rememberLastUsedCamera: true,
+            };
+
+            // Démarrage du scanner
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+                .then(() => {
+                    statusText.textContent = "Veuillez scanner votre QR code";
+                    statusText.classList.remove('animate-pulse');
+                })
+                .catch(err => {
+                    console.error("Erreur de démarrage de la caméra : ", err);
+                    statusText.textContent = "Erreur Caméra";
+                    showResult("Impossible d'accéder à la caméra. Avez-vous donné la permission ?", 'error');
+                });
         });
     </script>
 </x-app-layout>

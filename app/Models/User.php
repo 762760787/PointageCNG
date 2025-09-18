@@ -47,4 +47,36 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pointage::class);
     }
+
+    public function conges(): HasMany
+    {
+        return $this->hasMany(Conge::class);
+    }
+     // --- LA SOLUTION EST ICI ---
+    /**
+     * Retourne les initiales de l'utilisateur.
+     * Par exemple, "Jean Dupont" devient "JD".
+     *
+     * @return string
+     */
+    public function getInitials(): string
+    {
+        $name = $this->name;
+        if (empty($name)) {
+            return '?';
+        }
+
+        $words = explode(' ', $name);
+        $initials = '';
+
+        // Prend la première lettre du premier mot
+        $initials .= mb_substr($words[0], 0, 1);
+
+        // Si il y a plus d'un mot, prend la première lettre du dernier mot
+        if (count($words) > 1) {
+            $initials .= mb_substr(end($words), 0, 1);
+        }
+
+        return mb_strtoupper($initials);
+    }
 }
