@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     <title>{{ $title ?? config('app.name', 'Laravel') }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -48,8 +48,8 @@
                         </a>
                     </div>
                     <div>
-                        <h1 class="font-semibold" style="color: var(--foreground);">Administration</h1>
-                        <p class="text-xs" style="color: var(--muted-foreground);">QR Attendance Management</p>
+                        <h1 class="font-semibold" style="color: var(--foreground);">SEN Pointage</h1>
+                        <p class="text-xs" style="color: var(--muted-foreground);">Gestion de présence par QR code</p>
                     </div>
                 </div>
             </div>

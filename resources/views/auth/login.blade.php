@@ -1,13 +1,13 @@
 
 <x-guest-layout>
-    <div class="w-full max-w-md space-x-6" style="align-content: center; >
+    <div class="w-full max-w-md space-x-6" style="align-content: center;" >
         <div class="text-center">
             <div class="mx-auto h-16 w-16 rounded-full flex items-center justify-center mb-4" style="background-color: var(--primary);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-foreground);">
                     <rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h.01"/><path d="M21 12h.01"/><path d="M12 21h.01"/>
                 </svg>
             </div>
-            <h1 class="text-3xl font-bold" style="color: var(--foreground);">QR Attendance</h1>
+            <h1 class="text-3xl font-bold" style="color: var(--foreground);">SEN Pointage</h1>
             <p class="mt-2" style="color: var(--muted-foreground);">Solution moderne de suivi du temps</p>
         </div>
 

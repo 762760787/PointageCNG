@@ -11,7 +11,7 @@
             @if(isset($days[$dayNumber]))
                 <h3>{{ $dayName }}</h3>
                 <table><thead><tr><th>Employé</th><th>Arrivée</th><th>Départ</th></tr></thead>
-                <tbody>@foreach($days[$dayNumber] as $pointage)<tr><td>{{$pointage->user->prenom}} {{$pointage->user->nom}}</td><td>{{ \Carbon\Carbon::parse($pointage->heure_arrivee)->format('H:i') }}</td><td>{{ $pointage->heure_depart ? \Carbon\Carbon::parse($pointage->heure_depart)->format('H:i') : '--:--' }}</td> <td></td> {{ $pointage->$obser}}</td></tr>@endforeach</tbody>
+                <tbody>@foreach($days[$dayNumber] as $pointage)<tr><td>{{$pointage->user->prenom}} {{$pointage->user->nom}}</td><td>{{ \Carbon\Carbon::parse($pointage->heure_arrivee)->format('H:i') }}</td><td>{{ $pointage->heure_depart ? \Carbon\Carbon::parse($pointage->heure_depart)->format('H:i') : '--:--' }}</td></tr>@endforeach</tbody>
                 </table>
             @endif
         @endforeach

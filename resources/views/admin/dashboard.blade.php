@@ -4,11 +4,14 @@
     </x-slot>
 
     <!-- Header -->
-    <header class="bg-card border-b border-border sticky top-0 z-40">
+    <div class="p-4 sm:p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
         <div class="flex items-center justify-between p-4">
-            <h1 class="font-semibold text-xl">Tableau de bord Admin</h1>
+            <div>
+                <h1 class="font-semibold text-xl">Tableau de bord Admin</h1>
+            </div>
         </div>
-    </header>
+    </div>
 
     <main class="p-4 space-y-6">
         <!-- Contenu de l'onglet Tableau de bord -->
