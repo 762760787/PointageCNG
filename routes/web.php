@@ -79,6 +79,9 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 
     Route::post('/conges', [AdminCongeController::class, 'store'])->name('conges.store');
 
+    // Dans le fichier routes/web.php, à l'intérieur du groupe de l'admin
+
+Route::get('/absents-jour', [AdminDashboardController::class, 'absentsDuJour'])->name('absents.jour');
 });
 
 

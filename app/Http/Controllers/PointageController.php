@@ -148,7 +148,7 @@ class PointageController extends Controller
     // --- CORRECTION APPLIQUÉE ICI ---
     public function scanner()
     {
-        
+
         /** @var \App\Models\User $user */
         $user = Auth::user();
 

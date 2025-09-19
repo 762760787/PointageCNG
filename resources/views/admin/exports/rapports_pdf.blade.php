@@ -5,12 +5,46 @@
 <body>
     <h1>Rapports des Heures Travaillées</h1>
     <h2>Rapport Mensuel - {{ now()->translatedFormat('F Y') }}</h2>
-    <table><thead><tr><th>Employé</th><th>Heures Travaillées</th></tr></thead>
-    <tbody>@forelse($monthlyReport as $report)<tr><td>{{$report['user']->prenom}} {{$report['user']->nom}}</td><td>{{$report['heures_travaillees']}}</td></tr>@empty<tr><td colspan="2">Aucune donnée.</td></tr>@endforelse</tbody>
+    <table>
+        <thead>
+            <tr>
+                <th>Employé</th>
+                <th>Heures Travaillées</th>
+            </tr>
+        </thead>
+    <tbody>
+        @forelse($monthlyReport as $report)
+        <tr>
+            <td>{{$report['user']->prenom}} {{$report['user']->nom}}</td>
+            <td>{{$report['heures_travaillees']}}</td>
+        </tr>
+        @empty
+        <tr>
+            <td colspan="2">Aucune donnée.</td>
+        </tr>
+        @endforelse
+    </tbody>
     </table>
     <h2>Rapport Annuel - {{ now()->format('Y') }}</h2>
-    <table><thead><tr><th>Employé</th><th>Heures Travaillées</th></tr></thead>
-    <tbody>@forelse($yearlyReport as $report)<tr><td>{{$report['user']->prenom}} {{$report['user']->nom}}</td><td>{{$report['heures_travaillees']}}</td></tr>@empty<tr><td colspan="2">Aucune donnée.</td></tr>@endforelse</tbody>
+    <table>
+        <thead>
+            <tr>
+                <th>Employé</th>
+                <th>Heures Travaillées</th>
+            </tr>
+        </thead>
+    <tbody>
+        @forelse($yearlyReport as $report)
+        <tr>
+            <td>{{$report['user']->prenom}} {{$report['user']->nom}}</td>
+            <td>{{$report['heures_travaillees']}}</td>
+        </tr>
+        @empty
+        <tr>
+            <td colspan="2">Aucune donnée.</td>
+        </tr>
+        @endforelse
+    </tbody>
     </table>
 </body>
 </html>

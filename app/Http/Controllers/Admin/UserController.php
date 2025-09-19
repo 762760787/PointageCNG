@@ -37,7 +37,7 @@ class UserController extends Controller
             'nom' => $validatedData['nom'],
             'email' => $validatedData['email'],
             'identifiant_employe' => $validatedData['identifiant_employe'],
-            'password' => Hash::make('password'), // Mot de passe par défaut
+            'password' => Hash::make('NG2025'), // Mot de passe par défaut
             'role' => 'employe',
         ]);
 

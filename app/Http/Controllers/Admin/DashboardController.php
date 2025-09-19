@@ -92,7 +92,6 @@ class DashboardController extends Controller
     /**
      * NOUVEAU: Affiche la page dédiée aux rapports mensuels et annuels.
      */
-    // --- Logique de rapport améliorée ---
     public function rapports()
     {
         // On n'a plus besoin de pré-charger les employés. La fonction de rapport s'en charge.
@@ -107,21 +106,19 @@ class DashboardController extends Controller
         $start = $period === 'month' ? Carbon::now()->startOfMonth() : Carbon::now()->startOfYear();
         $end = $period === 'month' ? Carbon::now()->endOfMonth() : Carbon::now()->endOfYear();
 
-        // On charge les pointages terminés AVEC les informations de l'utilisateur associé
         $pointages = Pointage::with('user')
             ->whereBetween('date', [$start, $end])
             ->whereNotNull('heure_arrivee')
             ->whereNotNull('heure_depart')
             ->get();
 
-        // On groupe les pointages trouvés par l'ID de l'utilisateur
         $pointagesByUser = $pointages->groupBy('user_id');
 
         $reportData = [];
-        // On boucle sur chaque groupe de pointages par utilisateur
         foreach ($pointagesByUser as $userId => $userPointages) {
-            // On s'assure que l'utilisateur existe et n'est pas un admin
-            if ($userPointages->first()->user && $userPointages->first()->user->role == 'employe') {
+
+            // On vérifie que l'utilisateur existe et que son rôle n'est PAS 'admin'.
+            if ($userPointages->first()->user && $userPointages->first()->user->role != 'admin') {
                 $totalSeconds = $userPointages->reduce(function ($carry, $pointage) {
                     $arrivee = Carbon::parse($pointage->heure_arrivee);
                     $depart = Carbon::parse($pointage->heure_depart);
@@ -130,17 +127,18 @@ class DashboardController extends Controller
                 }, 0);
 
                 if ($totalSeconds > 0) {
-                    $hours = floor($totalSeconds / 3600);
-                    $minutes = floor(($totalSeconds % 3600) / 60);
-                    $reportData[] = [
-                        'user' => $userPointages->first()->user, // On récupère l'objet User du premier pointage
+                     $hours = floor($totalSeconds / 3600);
+                     $minutes = floor(($totalSeconds % 3600) / 60);
+                     $reportData[] = [
+                        'user' => $userPointages->first()->user,
                         'heures_travaillees' => sprintf('%02d:%02d', $hours, $minutes),
-                    ];
+                     ];
                 }
             }
         }
         return $reportData;
     }
+
 
     public function exportHistorique(string $type)
     {
@@ -166,7 +164,7 @@ class DashboardController extends Controller
 
     public function exportRapports(string $type)
     {
-        $employees = \App\Models\User::where('role', 'employer')->get();
+        $employees = \App\Models\User::where('role', 'employe')->get();
         $monthlyReport = $this->generateReport($employees, 'month');
         $yearlyReport = $this->generateReport($employees, 'year');
 
@@ -174,5 +172,17 @@ class DashboardController extends Controller
             $pdf = Pdf::loadView('admin.exports.rapports_pdf', compact('monthlyReport', 'yearlyReport'));
             return $pdf->download('rapports-heures.pdf');
         }
+
+
+    }
+
+    public function absentsDuJour()
+    {
+        $allEmployees = User::where('role', 'employe')->get();
+        $pointagesDuJour = Pointage::whereDate('date', Carbon::today())->get();
+        $employesPresentsIds = $pointagesDuJour->pluck('user_id')->unique();
+        $employesAbsents = $allEmployees->whereNotIn('id', $employesPresentsIds);
+
+        return view('admin.absents', compact('employesAbsents'));
     }
 }

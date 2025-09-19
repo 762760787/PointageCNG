@@ -18,14 +18,51 @@
         <div id="dashboard" class="tab-content active p-4 pb-20 space-y-6">
             <!-- 1. Cartes de statistiques dynamiques -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="rounded-lg border bg-card"><div class="p-4 flex items-center justify-between"><div><p class="text-sm text-muted-foreground">Présents</p><p class="text-2xl font-bold" style="color: var(--success);">{{ $presents }}</p></div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
-                <div class="rounded-lg border bg-card"><div class="p-4 flex items-center justify-between"><div><p class="text-sm text-muted-foreground">En retard</p><p class="text-2xl font-bold" style="color: var(--warning);">{{ $enRetard }}</p></div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--warning);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="12" y1="12" x2="16" y2="14"/></svg></div></div>
-                <div class="rounded-lg border bg-card"><div class="p-4 flex items-center justify-between"><div><p class="text-sm text-muted-foreground">Absents</p><p class="text-2xl font-bold" style="color: var(--destructive);">{{ $absents }}</p></div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--destructive);"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div></div>
-                <div class="rounded-lg border bg-card"><div class="p-4 flex items-center justify-between"><div><p class="text-sm text-muted-foreground">Total</p><p class="text-2xl font-bold">{{ $totalEmployes }}</p></div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div></div>
+                <div class="bg-white rounded-lg border border-gray-200 p-4  bg-card">
+                    <div class="p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Présents</p>
+                            <p class="text-2xl font-bold" style="color: var(--success);">{{ $presents }}</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 p-4  bg-card">
+                    <div class="p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-muted-foreground">En retard</p>
+                            <p class="text-2xl font-bold" style="color: var(--warning);">{{ $enRetard }}</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--warning);">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="6" x2="12" y2="12"/>
+                            <line x1="12" y1="12" x2="16" y2="14"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 p-4  bg-card">
+                    <div class="p-4 flex items-center justify-between">
+                        <div>
+                            <a href="{{ route('admin.absents.jour') }}" class="text-sm text-muted-foreground">Absents</a>
+                            <p class="text-2xl font-bold" style="color: var(--destructive);">{{ $absents }}</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--destructive);">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg border border-gray-200 p-4  bg-card">
+                    <div class="p-4 flex items-center justify-between">
+                        <div><p class="text-sm text-muted-foreground">Total</p><p class="text-2xl font-bold">{{ $totalEmployes }}</p></div><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div></div>
             </div>
 
             <!-- 2. Présence en temps réel -->
-            <div class="rounded-lg border bg-card">
+            <div class="bg-white rounded-lg border border-gray-200 p-4  bg-card rounded-lg border bg-card">
                 <div class="p-4"><h3 class="font-semibold">Présence en temps réel</h3></div>
                 <div class="p-4 pt-0">
                     <ul role="list" class="divide-y divide-border">
@@ -73,7 +110,7 @@
 
 
             <!-- 4. Pointages du jour (Liste complète) -->
-            <div class="rounded-lg border bg-card">
+            <div class="bg-white rounded-lg border border-gray-200 p-4  bg-card rounded-lg border bg-card">
                 <div class="p-4"><h3 class="font-semibold">Pointages du jour</h3></div>
                 <div class="p-4 pt-0">
                     <ul role="list" class="divide-y divide-border">
@@ -89,7 +126,7 @@
 
         </main>
 
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const navButtons = document.querySelectorAll('.nav-button');
